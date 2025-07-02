@@ -13,7 +13,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: npm install
+    - name: Install dependencies
+      run: npm install
       shell: bash
-    - run: node index.js
+      working-directory: ${{ github.action_path }}
+
+    - name: Run notifier script
+      run: node index.js
       shell: bash
+      working-directory: ${{ github.action_path }}
