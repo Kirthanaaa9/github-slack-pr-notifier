@@ -11,5 +11,14 @@ inputs:
     default: 'false'
 
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      run: npm install
+      shell: bash
+      working-directory: ${{ github.action_path }}
+
+    - name: Run notifier script
+      run: node index.js
+      shell: bash
+      working-directory: ${{ github.action_path }}
