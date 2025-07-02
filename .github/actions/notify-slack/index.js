@@ -5,6 +5,8 @@ const https = require('https');
 async function run() {
   try {
     const webhook = core.getInput('slack-webhook-url');
+    console.log("Webhook URL received:", webhook);
+
     const includeLabels = core.getInput('include-labels') === 'true';
 
     const { action, pull_request: pr } = github.context.payload;
