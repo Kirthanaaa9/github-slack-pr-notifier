@@ -13,5 +13,4 @@ jobs:
       - uses: ./.github/actions/notify-slack
   with:
     slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-          include-labels: 'true'
+    include-labels: 'true'
