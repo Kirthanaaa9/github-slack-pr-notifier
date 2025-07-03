@@ -7,10 +7,12 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./.github/actions/notify-slack
-  with:
-    slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-    include-labels: 'true'
+      - name: Run Slack PR Notifier
+        uses: ./.github/actions/notify-slack
+        with:
+          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          include-labels: 'true'
