@@ -3,12 +3,15 @@ description: 'Notifies Slack on PR events like opened, closed, or merged'
 
 inputs:
   slack-webhook-url:
-    description: 'The Slack webhook URL'
+    description: 'Slack webhook URL'
     required: true
   include-labels:
-    description: 'Whether to include PR labels in the Slack message'
+    description: 'Whether to include PR labels'
     required: false
     default: 'false'
+  github-token:
+    description: 'GitHub token to fetch PR file data'
+    required: true
 
 runs:
   using: 'node16'
