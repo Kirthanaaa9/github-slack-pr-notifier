@@ -1,13 +1,13 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const https = require('https');
+import { getInput, setFailed } from '@actions/core';
+import { getOctokit, context } from '@actions/github';
+import { request } from 'https';
 
 
-const token = core.getInput('github-token');
-const octokit = github.getOctokit(token);
+const token = getInput('github-token');
+const octokit = getOctokit(token);
 
 const prNumber = pr.number;
-const { owner, repo } = github.context.repo;
+const { owner, repo } = context.repo;
 
 const { data: files } = await octokit.rest.pulls.listFiles({
   owner,
@@ -21,10 +21,10 @@ const fileSummary = `📄 *Changed Files:*\n${changedFilesText}\n`;
 
 async function run() {
   try {
-    const webhook = core.getInput('slack-webhook-url');
+    const webhook = getInput('slack-webhook-url');
     console.log("Webhook URL received:", webhook);
 
-    const { action, pull_request: pr } = github.context.payload;
+    const { action, pull_request: pr } = context.payload;
 
     const simpleText =  `🔔 *Pull Request Notification*\n${status}\n📝 *${pr.title}*\n👤 by @${pr.user.login}\n${labels}${fileSummary}🔗 <${pr.html_url}|View PR>`;
 
@@ -41,18 +41,18 @@ async function run() {
       }
     };
 
-    const req = https.request(options, (res) => {
+    const req = request(options, (res) => {
       console.log(`Slack response: ${res.statusCode}`);
     });
 
     req.on('error', (error) => {
-      core.setFailed(`Error: ${error.message}`);
+      setFailed(`Error: ${error.message}`);
     });
-// my pro
+
     req.write(payload);
     req.end();
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 }
 
