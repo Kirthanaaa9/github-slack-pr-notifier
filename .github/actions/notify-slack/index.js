@@ -1,19 +1,19 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const https = require('https');
+import { getInput, setFailed } from '@actions/core';
+import { getOctokit, context } from '@actions/github';
+import { request } from 'https';
 
 
 async function run() {
   try {
-    const webhook = core.getInput('slack-webhook-url');
-    const includeLabels = core.getInput('include-labels') === 'true';
-    const token = core.getInput('github-token');
+    const webhook = getInput('slack-webhook-url');
+    const includeLabels = getInput('include-labels') === 'true';
+    const token = getInput('github-token');
 
     console.log("Webhook URL received:", webhook);
 
-    const octokit = github.getOctokit(token);
-    const { action, pull_request: pr } = github.context.payload;
-    const { owner, repo } = github.context.repo;
+    const octokit = getOctokit(token);
+    const { action, pull_request: pr } = context.payload;
+    const { owner, repo } = context.repo;
 
     const status = action === 'opened' ? '🟦 *Opened*'
                  : action === 'closed' && pr.merged ? '🟩 *Merged*'
@@ -50,18 +50,18 @@ async function run() {
       }
     };
 
-    const req = https.request(options, (res) => {
+    const req = request(options, (res) => {
       console.log(`Slack response: ${res.statusCode}`);
     });
 
     req.on('error', (error) => {
-      core.setFailed(`Error: ${error.message}`);
+      setFailed(`Error: ${error.message}`);
     });
 
     req.write(payload);
     req.end();
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 }
 
